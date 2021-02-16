@@ -34,7 +34,7 @@ class KgMaster extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['kgmaster_id', 'nip', 'periode_id', 'tgl_penilaian', 'jml_tdkhadir'], 'required'],
+            [['kgmaster_id', 'nip', 'periode_id'], 'required'],
             [['tgl_penilaian'], 'safe'],
             [['jml_tdkhadir'], 'integer'],
             [['kgmaster_id', 'nip', 'periode_id'], 'string', 'max' => 20],

@@ -32,8 +32,8 @@ $this->params['breadcrumbs'][] = 'Kuisioner Kinerja Guru';
                 $nip = app\models\Guru::find()->all();
                 $listNip = yii\helpers\ArrayHelper::map($nip, 'nip', 'nip');
                 
-                $guru = app\models\Guru::find()->all();
-                $listGuru = yii\helpers\ArrayHelper::map($guru, 'nama_guru', 'nama_guru');
+                $guru = app\models\KgMaster::find()->all();
+                $listGuru = yii\helpers\ArrayHelper::map($guru, 'guru.nama_guru', 'guru.nama_guru');
                 ?>
 
                 <?=
@@ -45,7 +45,7 @@ $this->params['breadcrumbs'][] = 'Kuisioner Kinerja Guru';
                             ['class' => 'yii\grid\SerialColumn'],
                             [
                             'attribute' => 'nama_guru',
-                            'value' => 'nama_guru',
+                            'value' => 'guru.nama_guru',
                             'filterType' => GridView::FILTER_SELECT2,
                             'filter' => $listGuru,
                             'filterWidgetOptions' => [

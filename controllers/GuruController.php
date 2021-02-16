@@ -170,7 +170,7 @@ class GuruController extends Controller
         $cmd = $db->createCommand($qry);
         $kompetensi = $cmd->queryOne();
         
-        $qry = "SELECT kompetensi.kompetensi_id, kgdetail_id, kompetensi.nama_kompetensi, indikator.nama_indikator,
+        $qry = "SELECT kompetensi.kompetensi_id, kgdetail_id, kompetensi.nama_kompetensi, indikator.nama_indikator, indikator.indikator_id, 
                     kg_detail.skor_id, skor.bobot_skor as nilai from kg_detail INNER JOIN indikator 
                     ON indikator.indikator_id=kg_detail.indikator_id
                     INNER JOIN kompetensi ON kompetensi.kompetensi_id=indikator.kompetensi_id
@@ -179,10 +179,6 @@ class GuruController extends Controller
                     ORDER BY indikator.indikator_id";
         $cmd = $db->createCommand($qry);
         $indikator = $cmd->queryAll();
-        
-        $qry = "select skor_id, nama_skor from skor";
-        $cmd = $db->createCommand($qry);
-        $rekapskor = $cmd->queryAll();
         
          $qry = "select * from guru inner join kg_master on guru.nip=kg_master.nip inner join periode "
                  . " on periode.periode_id=kg_master.periode_id "
@@ -216,7 +212,6 @@ class GuruController extends Controller
      
         return $this->render('nilaikompetensi',['kompetensi' => $kompetensi,
                                           'indikator' => $indikator,
-                                          'rekapskor' => $rekapskor,
                                             'guru'=>$guru,
                                              
                                            ]);

@@ -171,6 +171,75 @@ class KgMasterController extends Controller
                                             ]);
     }
     
+    public function actionNilaitotal() {
+        
+        $model = new Guru ();
+        if ($model->load(Yii::$app->request->post())) {
+            
+        }
+        $nip = $model->nip;
+        if ($nip != null) {
+            $db = Yii::$app->db;
+            $qry = "SELECT guru.nip,guru.nama_guru as nama, kompetensi.kompetensi_id, kompetensi.nama_kompetensi, count(indikator.indikator_id) as jml_indi, 
+                    sum(skor.bobot_skor) as nilai from kg_detail 
+                    INNER JOIN kg_master ON kg_master.kgmaster_id=kg_detail.kgmaster_id
+                    INNER JOIN guru ON guru.nip=kg_master.nip
+                    INNER JOIN indikator ON indikator.indikator_id=kg_detail.indikator_id
+                    INNER JOIN kompetensi ON kompetensi.kompetensi_id=indikator.kompetensi_id
+                    INNER JOIN skor ON skor.skor_id=kg_detail.skor_id
+                    where guru.nip = '$nip'
+                    GROUP BY kompetensi.kompetensi_id, kompetensi.nama_kompetensi";
+            $cmd = $db->createCommand($qry);
+            $rekapkompetensi = $cmd->queryAll();
+        } else {
+            $db = Yii::$app->db;
+            $qry = "SELECT * from kg_detail 
+                    INNER JOIN kg_master ON kg_master.kgmaster_id=kg_detail.kgmaster_id
+                    INNER JOIN guru ON guru.nip=kg_master.nip
+                    INNER JOIN indikator ON indikator.indikator_id=kg_detail.indikator_id
+                    INNER JOIN kompetensi ON kompetensi.kompetensi_id=indikator.kompetensi_id
+                    INNER JOIN skor ON skor.skor_id=kg_detail.skor_id
+                    GROUP BY kompetensi.kompetensi_id, kompetensi.nama_kompetensi";
+            $cmd = $db->createCommand($qry);
+            $rekapkompetensi = $cmd->queryAll();
+        }
+     
+        return $this->render('nilaitotal',['rekapkompetensi' => $rekapkompetensi,    
+                                                'model' => $model ]);
+    }
+    
+    public function actionNilaibyguru() {
+        
+        $id=Yii::$app->user->identity->username; 
+        $model = \app\models\Guru::findOne($id);
+
+        if ($model->load(Yii::$app->request->get())) {
+            
+        }
+        $nip = $model->nip;
+        if ($nip != null) {
+            $db = Yii::$app->db;
+            $qry = "SELECT guru.nip,guru.nama_guru as nama, kompetensi.kompetensi_id, kompetensi.nama_kompetensi, (count(indikator.indikator_id)*2) as maxskor, 
+                    sum(skor.bobot_skor) as nilai from kg_detail 
+                    INNER JOIN kg_master ON kg_master.kgmaster_id=kg_detail.kgmaster_id
+                    INNER JOIN guru ON guru.nip=kg_master.nip
+                    INNER JOIN indikator ON indikator.indikator_id=kg_detail.indikator_id
+                    INNER JOIN kompetensi ON kompetensi.kompetensi_id=indikator.kompetensi_id
+                    INNER JOIN skor ON skor.skor_id=kg_detail.skor_id
+                    where guru.nip = '$nip' 
+                    GROUP BY kompetensi.kompetensi_id, kompetensi.nama_kompetensi";
+            $cmd = $db->createCommand($qry);
+            $rekapkompetensi = $cmd->queryAll();
+        } else {
+            $db = Yii::$app->db;
+            $qry = "select * from kompetensi";
+            $cmd = $db->createCommand($qry);
+            $rekapkompetensi = $cmd->queryAll();
+        }
+     
+        return $this->render('nilaibyguru',['rekapkompetensi' => $rekapkompetensi,    
+                                                'model' => $model ]);
+    }
     
     public function actionDaftarkompetensi($id)
     {   

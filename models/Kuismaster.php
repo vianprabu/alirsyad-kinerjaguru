@@ -34,7 +34,7 @@ class Kuismaster extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['kuismaster_id', 'kgmaster_id', 'nip', 'siswa_id', 'jenis'], 'required'],
+            [['kuismaster_id',  'nip'], 'required'],
             [['jenis'], 'string'],
             [['tgl_pengisian'], 'safe'],
             [['kuismaster_id'], 'string', 'max' => 50],

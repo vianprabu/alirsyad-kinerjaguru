@@ -143,24 +143,25 @@ class KuismasterController extends Controller
     }
     
     public function actionKuissejawat($id) {
-       
-        $model = \app\models\Guru::findOne($id);
+        
+        $key = Yii::$app->user->identity->username;
+        $model = \app\models\Guru::findOne($key);
+        
+        $kgmaster= \app\models\KgMaster::findOne($id);
+        $kgmaster_id=$kgmaster['kgmaster_id'];
         $db = Yii::$app->db;
-        
-        $periode=\app\models\Periode::find()->where(['is_aktif'=>1])->one();
-        $periode_id=$periode['periode_id'];
-        
-        $qry = "select count(*) from kuismaster inner join kg_master on kg_master.kgmaster_id=kuismaster.kgmaster_id "
-                . "inner join periode on periode.periode_id=kg_master.periode_id where kuismaster.nip='$id' and periode.periode_id='$periode_id' ";
+        // generate kuismaster
+        // cek dulu apakah sudah ada datakuisnya berdasarkan user yg ngisi dan guru yg dipilih
+         
+        $qry = "select count(*) from kuismaster where "
+                 . " kgmaster_id='$kgmaster_id' and kuismaster.nip='$key' ";
         $cek = $db->createCommand($qry)->queryScalar();
         
-        if($cek==0){
-            $kgmaster= new KgMaster;
+         if($cek==0){
             $kuismaster= new Kuismaster;
-            $kuismaster->kuismaster_id= uniqid();
-            $kuismaster->nip=$id;
-            
-            
+            $kuismaster->kuismaster_id = uniqid();
+            $kuismaster->kgmaster_id=$kgmaster_id;
+            $kuismaster->nip=$key;
             $kuismaster->save(false);
             
             // generate detailnya
@@ -179,8 +180,7 @@ class KuismasterController extends Controller
             }
         }
         
-        $qry = "select * from kuismaster inner join kg_master on kg_master.kgmaster_id=kuismaster.kgmaster_id "
-                . "inner join periode on periode.periode_id=kg_master.periode_id where kuismaster.nip='$id' and periode.periode_id='$periode_id' ";
+        $qry = "select * from kuismaster where kgmaster_id ='$kgmaster_id' and kuismaster.nip='$key' ";
         $km = $db->createCommand($qry)->queryOne();
         $kuismasterid=$km['kuismaster_id'];
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -192,47 +192,61 @@ class KuismasterController extends Controller
         $cmd = $db->createCommand($qry);
         $rekapkomponen = $cmd->queryAll();
         
-        /*
-        $qry = "select pernyataan.komponen_id, pernyataan_id, komponen.kelkompo_id, nama_pernyataan from pernyataan inner join komponen "
-                . "on pernyataan.komponen_id=komponen.komponen_id where komponen.komponen_id = '11'";
+        
+        $qry = "SELECT komponen.komponen_id, kuisdetail_id, komponen.nama_komponen, pernyataan.nama_pernyataan,
+                    kuisdetail.pernyataan_id,kuisdetail.nilai_id, nilai.bobot_nilai as skor from kuisdetail 
+                    INNER JOIN kuismaster ON kuismaster.kuismaster_id=kuisdetail.kuismaster_id
+                    INNER JOIN pernyataan ON pernyataan.pernyataan_id=kuisdetail.pernyataan_id
+                    INNER JOIN komponen ON komponen.komponen_id=pernyataan.komponen_id
+                    INNER JOIN nilai ON nilai.nilai_id=kuisdetail.nilai_id
+                    WHERE kuismaster.kgmaster_id='$id' AND komponen.kelkompo_id='1'
+                    ORDER BY pernyataan.pernyataan_id";
         $cmd = $db->createCommand($qry);
         $pernyataan = $cmd->queryAll();
-        
-         */
         
         $qry = "select nilai_id, nama_nilai from nilai";
         $cmd = $db->createCommand($qry);
         $rekapnilai = $cmd->queryAll();
         
-        $qry = "select nama_guru, bidang, guru.nip, instansi.instansi_id , instansi.nama_instansi, kelas.nama_kelas from guru inner join instansi on 
-            instansi.instansi_id=guru.instansi_id inner join guru_kelas on guru_kelas.nip=guru.nip inner join kelas on kelas.kelas_id=guru_kelas.kelas_id
-            where guru.nip='$id'";
+        $qry = "select * from guru 
+                INNER JOIN kg_master ON guru.nip=kg_master.nip 
+                INNER JOIN instansi ON instansi.instansi_id=guru.instansi_id
+                
+                where kgmaster_id='$id'";
         $cmd = $db->createCommand($qry);
         $guru = $cmd->queryOne();
         
-        return $this->render('kuissejawat',['model'=> $model,
+        
+        
+        
+        return $this->render('kuissejawat',['kgmaster'=> $kgmaster,
                                             'rekapkomponen' => $rekapkomponen,
                                             'pernyataan' => $pernyataan,
                                             'rekapnilai' => $rekapnilai,
-                                            'guru' => $guru]);
+                                            'guru' => $guru,
+                                            'model' => $model,
+            ]);
     }
     
     public function actionKuissiswa($id) {
         $model = \app\models\Guru::findOne($id);
         $db = Yii::$app->db;
         
-        $periode=\app\models\Periode::find()->where(['is_aktif'=>1])->one();
-        $periode_id=$periode['periode_id'];
+        $kgmaster= \app\models\KgMaster::findOne($id);
+        $kgmaster_id=$kgmaster['kgmaster_id'];
         
-        $qry = "select count(*) from kg_master where nip='$id' and periode_id='$periode_id' ";
+        $qry = "select count(*) from kuismaster where kuismaster.nip='$id' ";
+        $cek = $db->createCommand($qry)->queryScalar();
+        
         
         $db = Yii::$app->db;
         $qry = "select * from komponen where kelkompo_id = '2' ";
         $cmd = $db->createCommand($qry);
         $rekapkomponen = $cmd->queryAll();
         
-        $qry = "select pernyataan.komponen_id, komponen.kelkompo_id, nama_pernyataan from pernyataan inner join komponen "
-                . "on pernyataan.komponen_id=komponen.komponen_id where komponen.komponen_id = '11'";
+        
+        $qry = "select pernyataan.komponen_id, pernyataan_id, komponen.kelkompo_id, nama_pernyataan from pernyataan inner join komponen "
+                . "on pernyataan.komponen_id=komponen.komponen_id where komponen.komponen_id = '21'";
         $cmd = $db->createCommand($qry);
         $pernyataan = $cmd->queryAll();
         
@@ -246,13 +260,13 @@ class KuismasterController extends Controller
         $cmd = $db->createCommand($qry);
         $guru = $cmd->queryOne();
         
-        return $this->render('kuissiswa', ['rekapkomponen' => $rekapkomponen,
-                                           'pernyataan' => $pernyataan,
-                                           'rekapnilai' => $rekapnilai,
-                                            'model' => $model,
-                                           'guru' => $guru
-                                            ]);
+        return $this->render('kuissiswa',['model'=> $model,
+                                            'rekapkomponen' => $rekapkomponen,
+                                            'pernyataan' => $pernyataan,
+                                            'rekapnilai' => $rekapnilai,
+                                            'guru' => $guru]);
     }
+    
     
     public function actionDaftarkuissejawat() {
        
@@ -274,7 +288,7 @@ class KuismasterController extends Controller
             $ambilperiode = $cmd->queryAll();
         }
         
-        $searchModel = new GuruSearch();
+        $searchModel = new KgMasterSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
      
         return $this->render('daftarkuissejawat',['ambilperiode'=> $ambilperiode,

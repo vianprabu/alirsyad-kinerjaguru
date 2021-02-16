@@ -80,10 +80,10 @@ $this->params['breadcrumbs'][] = ['label' => 'Kuissiswa' ];
                                 $bln = $bulan[$bl];
                               
                               ?>
-                    Nama Sekolah       : <?=$guru['nama_instansi']?><br/>
-                     Nama Guru          : <?=$guru['nama_guru']?>   <br/>
-                     Matapelajaran/Kelas: <?=$guru['bidang']?> / <?=$guru['nama_kelas']?><br/>
-                     Hari dan Tanggal   : <?php echo $hari_indonesia[$hari].', '.$tanggal.' '.$bln.' '.$tahun; ?><br/>
+                     <b> Nama Sekolah       : </b><?=$guru['nama_instansi']?><br/>
+                     <b> Nama Guru          : </b><?=$guru['nama_guru']?>   <br/>
+                     <b> Matapelajaran/Kelas: </b><?=$guru['bidang']?> / <?=$guru['nama_kelas']?><br/>
+                     <b> Hari dan Tanggal   : </b> <?php echo $hari_indonesia[$hari].', '.$tanggal.' '.$bln.' '.$tahun; ?><br/>
                      
                 </h3>
             </div>
@@ -123,9 +123,9 @@ $this->params['breadcrumbs'][] = ['label' => 'Kuissiswa' ];
                         <td style="text-align: left"><?php echo $no.'.'.$nyata['nama_pernyataan'];?></td>
 
 <!-- PERULANGAN CHECKBOX -->                        
-                        <td><input type='radio' name='skor' value='0'/></td>
-                        <td><input type='radio' name='skor' value='1'/></td>
-                        <td><input type='radio' name='skor' value='2'/></td>          
+                        <td><input type='radio' name='<?=$nyata['pernyataan_id']?>' value='01' /></td>
+                        <td><input type='radio' name='<?=$nyata['pernyataan_id']?>' value='02' /></td>
+                        <td><input type='radio' name='<?=$nyata['pernyataan_id']?>' value='03' /></td>          
                         <?php 
                         
                         }

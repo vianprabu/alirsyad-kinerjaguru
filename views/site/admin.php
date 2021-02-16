@@ -79,21 +79,40 @@ $this->title = '';
         <div class="row">
             <table style="width:60%" align="center" class="table table-bordered table-striped" >
                 <tr>          
-                    <th class= "bg-primary" style="text-align: center">KETENTUAN UMUM</th>   
-                    <th class= "bg-primary" style="text-align: center">PENILAIAN GURU MAPEL/KELAS</th>
+                    <th width="50%" class= "bg-primary" style="text-align: center">KETENTUAN UMUM</th>   
+                    <th width="50%" class= "bg-primary" style="text-align: center">PENILAIAN GURU MAPEL/KELAS</th>
                 </tr>
                 <tr bgcolor="#FFFFFF">
-                    <td ><a style="width:50px;height: 30px" class="btn btn-grad" href="web/index.php?r=guru%2Fpetunjuk"></a> <b>Petunjuk Penggunaan</b> <br><br>
+                    <td >
+                        <?php
+                        $isuser=User::hasRole(['Siswa','Guru','Kepala Sekolah'], $superAdminAllowed = false);
+                        if($isuser):
+                        ?>
+                        <a style="width:50px;height: 30px" class="btn btn-grad" href="web/index.php?r=guru%2Fpetunjuk"></a> <b>Petunjuk Penggunaan</b> <br><br>
+                        <?php endif; ?>
                     <a style="width:50px;height: 30px" class="btn btn-grad" href="web/index.php?r=guru%2Fproporsi"></a> <b>Proporsi Penilaian</b>
                 </td>
                 <td>
                     <?php
-                        $iskepsekolah=User::hasRole(['Kepala Sekolah'], $superAdminAllowed = true);
-                        if($iskepsekolah):
+                        $issekolah=User::hasRole(['Kepala Sekolah','Guru'], $superAdminAllowed = false);
+                        if($issekolah):
                         ?>
                     <a style="width:50px;height: 30px" class="btn btn-grad" href="web/index.php?r=kg-master%2Fdaftarguru"></a> <b>Oleh Kepala Sekolah</b><br><br>
                     <?php endif; ?>
+                    
+                    <?php
+                        $isguru=User::hasRole(['Guru'], $superAdminAllowed = false);
+                        if($isguru):
+                    ?>
+                    <a style="width:50px;height: 30px" class="btn btn-grad1" href="web/index.php?r=kg-master%2Fnilaibyguru"></a> <b>Nilai PK Guru Mapel/Kelas</b>
+                    <?php endif; ?>
+                    
+                    <?php
+                        $iskepsekolah=User::hasRole(['Kepala Sekolah'], $superAdminAllowed = true);
+                        if($iskepsekolah):
+                    ?>
                     <a style="width:50px;height: 30px" class="btn btn-grad1" href="web/index.php?r=kg-master%2Fnilaitotal"></a> <b>Nilai PK Guru Mapel/Kelas</b>
+                    <?php endif; ?>
                 </td>     
             </tr>
             </table>
@@ -103,11 +122,12 @@ $this->title = '';
         <div class="row">
             <table style="width:60%" align="center" class="table table-bordered table-striped">
                 <tr >          
-                    <th class= "bg-primary" style="text-align: center">DATA PENILAIAN</th>   
-                    <th class= "bg-primary" style="text-align: center">KUISIONER GURU MAPEL/KELAS</th>
+                    <th width="50%" class= "bg-primary" style="text-align: center">DATA PENILAIAN</th>   
+                    <th width="50%" class= "bg-primary" style="text-align: center">KUISIONER GURU MAPEL/KELAS</th>
                 </tr>
                 <tr bgcolor="#FFFFFF">
-                    <td ><a style="width:50px;height: 30px" class="btn btn-grad" href="web/index.php?r=guru%2Fdata"></a> <b>Data Guru dan Penilai</b><br><br>
+                    <td >
+                        <a style="width:50px;height: 30px" class="btn btn-grad" href="web/index.php?r=guru%2Fdata"></a> <b>Data Guru dan Penilai</b><br><br>
                         <a style="width:50px;height: 30px" class="btn btn-grad" href="web/index.php?r=guru%2Fdatakehadiran"></a> <b>Data Kehadiran</b><br><br>
                         <p style="text-align: center"><b>
                             <?php 
@@ -146,15 +166,14 @@ $this->title = '';
                     </td>
                     <td>
                         <?php
-                        $isguru=User::hasRole(['Guru'], $superAdminAllowed = true);
+                        $isguru=User::hasRole(['Guru'], $superAdminAllowed = false);
                         if($isguru):
                         ?>
-                        <a style="width:50px;height: 30px" class="btn btn-grad" href="web/index.php?r=kuismaster%2Fdaftarkuissejawat"></a> <b>Oleh Teman Sejawat</b>
+                        <a style="width:50px;height: 30px" class="btn btn-grad" href="web/index.php?r=kuismaster%2Fdaftarkuissejawat"></a> <b>Oleh Teman Sejawat</b><br><br>
                         <?php endif; ?>
-                        
-                        <br><br>
+                            
                        <?php
-                        $issiswa=User::hasRole(['Siswa'], $superAdminAllowed = true);
+                        $issiswa=User::hasRole(['Siswa'], $superAdminAllowed = false);
                         if($issiswa):
                         ?>
                         <a style="width:50px;height: 30px" class="btn btn-grad" href="web/index.php?r=kuismaster%2Fdaftarkuissiswa"></a> <b>Oleh Peserta Didik</b><br><br>

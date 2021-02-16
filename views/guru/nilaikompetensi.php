@@ -163,8 +163,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Kompetensi '.$kompetensi['kompeten
                               else if ($presentase >= 25 && $presentase <= 50) {
                                            echo "<td align='center' colspan='3'>2</td>";
                                         }
-                              else if ($presentase >= 0 && $presentase < 25) {
+                              else if ($presentase > 0 && $presentase < 25) {
                                            echo "<td align='center' colspan='3'>1</td>";
+                                        }
+                              else if ($presentase = 0) {
+                                           echo "<td align='center' colspan='3'>0</td>";
                                         }
                               else{
                                            echo "<td align='center' colspan='3'> data salah! </td>";

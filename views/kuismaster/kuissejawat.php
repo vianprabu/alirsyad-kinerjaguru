@@ -15,7 +15,8 @@ use yii\bootstrap\ActiveField;
 $this->title = 'KUISIONER KINERJA GURU';
 $this->params['breadcrumbs'][] = ['label' => 'Kuisioner Kinerja Guru', 'url' => ['/kuismaster/daftarkuissejawat']];
 $this->params['breadcrumbs'][] = ['label' => 'Kuis Sejawat' ];
-$this->params['breadcrumbs'][] = ['label' => $model->nama_guru ];
+$this->params['breadcrumbs'][] = ['label' => $kgmaster->kgmaster_id ];
+
 
 ?>
 
@@ -43,6 +44,7 @@ $this->params['breadcrumbs'][] = ['label' => $model->nama_guru ];
   color: white;
 }
 </style>
+<?php $form = ActiveForm::begin(); ?>
 <!-- CODING TABEL HTML -->
 <div class="row">
     <div class="col-md-12">
@@ -80,10 +82,10 @@ $this->params['breadcrumbs'][] = ['label' => $model->nama_guru ];
                                 $bln = $bulan[$bl];
                               
                               ?>
-                     Nama Sekolah       : <?=$guru['nama_instansi']?><br/>
-                     Nama Guru          : <?=$guru['nama_guru']?>   <br/>
-                     Matapelajaran/Kelas: <?=$guru['bidang']?> / <?=$guru['nama_kelas']?><br/>
-                     Hari dan Tanggal   : <?php echo $hari_indonesia[$hari].', '.$tanggal.' '.$bln.' '.$tahun; ?><br/>
+                     <b> Nama Sekolah       : </b><?=$guru['nama_instansi']?><br/>
+                     <b> Nama Guru          : </b><?=$guru['nama_guru']?>   <br/>
+                     <b> Matapelajaran/Kelas: </b><?=$guru['bidang']?> / <br/>
+                     <b> Hari dan Tanggal   : </b> <?php echo $hari_indonesia[$hari].', '.$tanggal.' '.$bln.' '.$tahun; ?><br/>
                      
                 </h3>
             </div>
@@ -107,6 +109,8 @@ $this->params['breadcrumbs'][] = ['label' => $model->nama_guru ];
 <!-- PERULANGAN KOMPETENSI -->
                     <?php
                         $nomor = 0;
+                        $totalskor=0;
+                        $nilai=0;
                         foreach ($rekapkomponen as $key => $rekap){
                             $nomor++;
                     ?>        
@@ -124,9 +128,9 @@ $this->params['breadcrumbs'][] = ['label' => $model->nama_guru ];
 
 <!-- PERULANGAN CHECKBOX -->                        
                         
-                        <td><input type='radio' name=<?=$nyata['pernyataan_id']?> value='0'/></td>
-                        <td><input type='radio' name=<?=$nyata['pernyataan_id']?> value='1'/></td>
-                        <td><input type='radio' name=<?=$nyata['pernyataan_id']?> value='2'/></td>         
+                        <td><input type='radio' name='<?=$nyata['pernyataan_id']?>' value='01' /></td>
+                        <td><input type='radio' name='<?=$nyata['pernyataan_id']?>' value='02' /></td>
+                        <td><input type='radio' name='<?=$nyata['pernyataan_id']?>' value='03' /></td>       
                         <?php 
                         
                         }
@@ -193,4 +197,6 @@ $this->params['breadcrumbs'][] = ['label' => $model->nama_guru ];
         </div>
     </div>
 </div>
+
+  <?php ActiveForm::end(); ?>
 
